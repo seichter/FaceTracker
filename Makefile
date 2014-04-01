@@ -1,5 +1,5 @@
 # Paths
-OPENCV_PATH=/usr/local
+OPENCV_PATH=/opt/local
 
 # Programs
 CC=
