@@ -1,2 +1,3 @@
 *.d
 *.o
+CMakeLists.txt.user

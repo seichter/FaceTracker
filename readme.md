@@ -2,6 +2,8 @@
 
 FaceTracker is a library for deformable face tracking written in C++ using OpenCV 2, authored by [Jason Saragih](http://jsaragih.org/) and maintained by [Kyle McDonald](http://kylemcdonald.net/).
 
+This version was furnished with a CMake build system and worked on for performance and robustness by [Hartmut Seichter](http://technotecture.com).
+
 It is available free for non-commercial use, and may be redistributed under these conditions. Please see `license.md` for complete details.
 
 Wrappers are available for:

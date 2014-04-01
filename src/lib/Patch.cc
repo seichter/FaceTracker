@@ -38,12 +38,18 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
 #include <FaceTracker/Patch.h>
-#define SGN(x) (x<0) ? 0:1
+
+// #define SGN(x) (x<0) ? 0:1
+
+template <typename T> 
+static inline bool SGN(const T& x) { return !(x < 0); }
+
 using namespace FACETRACKER;
 using namespace std;
 //===========================================================================
 void sum2one(cv::Mat &M)
 {
+#if 0
   assert(M.type() == CV_64F);
   double sum = 0; int cols = M.cols, rows = M.rows;
   if(M.isContinuous()){cols *= rows;rows = 1;}
@@ -52,18 +58,27 @@ void sum2one(cv::Mat &M)
     for(int j = 0; j < cols; j++)sum += *Mi++;
   }
   M /= sum; return;
+#endif
+
+	M *= 1.0/ (cv::sum(M)[0] + std::numeric_limits<float>::epsilon());
+	
 }
+
+
+
 //===========================================================================
-void Grad(cv::Mat im,cv::Mat grad)
+
+inline static
+void Grad(const cv::Mat& im,cv::Mat grad)
 {
   assert((im.rows == grad.rows) && (im.cols == grad.cols));
   assert((im.type() == CV_32F) && (grad.type() == CV_32F));
-  int x,y,h = im.rows,w = im.cols; float vx,vy; grad = cv::Scalar(0);
+  register int x,y,h = im.rows,w = im.cols; float vx,vy; grad = cv::Scalar(0);
   cv::MatIterator_<float> gp  = grad.begin<float>() + w+1;
-  cv::MatIterator_<float> px1 = im.begin<float>()   + w+2;
-  cv::MatIterator_<float> px2 = im.begin<float>()   + w;
-  cv::MatIterator_<float> py1 = im.begin<float>()   + 2*w+1;
-  cv::MatIterator_<float> py2 = im.begin<float>()   + 1;
+  cv::MatConstIterator_<float> px1 = im.begin<float>()   + w+2;
+  cv::MatConstIterator_<float> px2 = im.begin<float>()   + w;
+  cv::MatConstIterator_<float> py1 = im.begin<float>()   + 2*w+1;
+  cv::MatConstIterator_<float> py2 = im.begin<float>()   + 1;
   for(y = 1; y < h-1; y++){ 
     for(x = 1; x < w-1; x++){
       vx = *px1++ - *px2++; vy = *py1++ - *py2++; *gp++ = vx*vx + vy*vy;
@@ -72,15 +87,15 @@ void Grad(cv::Mat im,cv::Mat grad)
   }return;
 }
 //===========================================================================
-void LBP(cv::Mat im,cv::Mat lbp)
+void LBP(const cv::Mat& im,cv::Mat lbp)
 {
   assert((im.rows == lbp.rows) && (im.cols == lbp.cols));
   assert((im.type() == CV_32F) && (lbp.type() == CV_32F));
   int x,y,h = im.rows,w = im.cols; float v[9]; lbp = cv::Scalar(0);
   cv::MatIterator_<float> lp = lbp.begin<float>() + w+1;
-  cv::MatIterator_<float> p1 = im.begin<float>();
-  cv::MatIterator_<float> p2 = im.begin<float>()  + w;
-  cv::MatIterator_<float> p3 = im.begin<float>()  + w*2;
+  cv::MatConstIterator_<float> p1 = im.begin<float>();
+  cv::MatConstIterator_<float> p2 = im.begin<float>()  + w;
+  cv::MatConstIterator_<float> p3 = im.begin<float>()  + w*2;
  for(y = 1; y < h-1; y++){
     for(x = 1; x < w-1; x++){
       v[4] = *p2++; v[0] = *p2++; v[5] = *p2;
@@ -162,8 +177,8 @@ void Patch::Response(cv::Mat &im,cv::Mat &resp)
   }
   cv::matchTemplate(I,_W,res_,CV_TM_CCOEFF_NORMED);
   cv::MatIterator_<double> p = resp.begin<double>();
-  cv::MatIterator_<float> q1 = res_.begin<float>();
-  cv::MatIterator_<float> q2 = res_.end<float>();
+  cv::MatConstIterator_<float> q1 = res_.begin<float>();
+  cv::MatConstIterator_<float> q2 = res_.end<float>();
   while(q1 != q2)*p++ = 1.0/(1.0 + exp( *q1++ * _a + _b ));
   return;
 }
@@ -232,13 +247,27 @@ void MPatch::Response(cv::Mat &im,cv::Mat &resp)
   int h = im.rows - _h + 1, w = im.cols - _w + 1;
   if(resp.rows != h || resp.cols != w)resp.create(h,w,CV_64F);
   if(res_.rows != h || res_.cols != w)res_.create(h,w,CV_64F);
+  
+  // cv::Mat mresp(_p.size(),1,cv::DataType<double>::type);
+  
   if(_p.size() == 1){_p[0].Response(im,resp); sum2one(resp);}
   else{
     resp = cvScalar(1.0);
     for(int i = 0; i < (int)_p.size(); i++){
-      _p[i].Response(im,res_); sum2one(res_); resp = resp.mul(res_);
+      _p[i].Response(im,res_); 
+	  // sum2one(res_); 
+	  resp = resp.mul(res_);
     }
-    sum2one(resp); 
-  }return;
+    // sum2one(resp); 
+  }
+  
+  cv::normalize( resp, resp, 0, 1, cv::NORM_MINMAX, -1, cv::Mat() );
+  
+  // cv::threshold( resp, resp, 0.5, 1, cv::THRESH_BINARY_INV );
+  
+  std::cout << resp << std::endl << std::endl;
+  
+  // std::cout << cv::sum(resp)/_p.size() << std::endl << std::endl;
+  
 }
 //===========================================================================

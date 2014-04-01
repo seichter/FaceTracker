@@ -100,11 +100,11 @@ int parse_cmd(int argc, const char** argv,
 	   << "# usage: ./face_tracker [options]" << std::endl
 	   << "#" << std::endl << std::endl
 	   << "Arguments:" << std::endl
-	   << "-m <string> -> Tracker model (default: ../model/face2.tracker)"
+       << "-m <string> -> Tracker model (default: model/face2.tracker)"
 	   << std::endl
-	   << "-c <string> -> Connectivity (default: ../model/face.con)"
+       << "-c <string> -> Connectivity (default: model/face.con)"
 	   << std::endl
-	   << "-t <string> -> Triangulation (default: ../model/face.tri)"
+       << "-t <string> -> Triangulation (default: model/face.tri)"
 	   << std::endl
 	   << "-s <double> -> Image scaling (default: 1)" << std::endl
 	   << "-d <int>    -> Frames/detections (default: -1)" << std::endl
@@ -133,27 +133,27 @@ int parse_cmd(int argc, const char** argv,
   for(i = 1; i < argc; i++){
     if(std::strcmp(argv[i],"-m") == 0){
       if(argc > i+1)std::strcpy(ftFile,argv[i+1]);
-      else strcpy(ftFile,"../model/face2.tracker");
+      else strcpy(ftFile,"model/face2.tracker");
       break;
     }
   }
-  if(i >= argc)std::strcpy(ftFile,"../model/face2.tracker");
+  if(i >= argc)std::strcpy(ftFile,"model/face2.tracker");
   for(i = 1; i < argc; i++){
     if(std::strcmp(argv[i],"-c") == 0){
       if(argc > i+1)std::strcpy(conFile,argv[i+1]);
-      else strcpy(conFile,"../model/face.con");
+      else strcpy(conFile,"model/face.con");
       break;
     }
   }
-  if(i >= argc)std::strcpy(conFile,"../model/face.con");
+  if(i >= argc)std::strcpy(conFile,"model/face.con");
   for(i = 1; i < argc; i++){
     if(std::strcmp(argv[i],"-t") == 0){
       if(argc > i+1)std::strcpy(triFile,argv[i+1]);
-      else strcpy(triFile,"../model/face.tri");
+      else strcpy(triFile,"model/face.tri");
       break;
     }
   }
-  if(i >= argc)std::strcpy(triFile,"../model/face.tri");
+  if(i >= argc)std::strcpy(triFile,"model/face.tri");
   return 0;
 }
 //=============================================================================
