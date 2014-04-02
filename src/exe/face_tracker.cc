@@ -167,7 +167,7 @@ int main(int argc, const char** argv)
 
     //set other tracking parameters
 
-#if 0
+#if 1
     std::vector<int> wSize1(1);
     wSize1[0] = 7;
 
@@ -184,7 +184,7 @@ int main(int argc, const char** argv)
     wSize2[1] = 7;
     wSize2[2] = 5;
 #endif
-    int nIter = 5; double clamp=3,fTol = 0.005;
+    int nIter = 5; double clamp=3,fTol = 0.01;
     FACETRACKER::Tracker model(ftFile);
     cv::Mat tri=FACETRACKER::IO::LoadTri(triFile);
     cv::Mat con=FACETRACKER::IO::LoadCon(conFile);

@@ -89,7 +89,7 @@ int Tracker::Track(cv::Mat im,vector<int> &wSize, const int  fpd,
                    const int  nIter, const double clamp,const double fTol,
                    const bool fcheck)
 { 
-    ScopeTimer st(__FUNCTION__);
+//    ScopeTimer st(__FUNCTION__);
 
     assert(im.type() == CV_8U);
     if(im.channels() == 1)gray_ = im;
