@@ -38,6 +38,8 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
 #include <FaceTracker/PDM.h>
+
+//#include <FaceTracker/Timer.h>
 #define db at<double>
 using namespace FACETRACKER;
 using namespace std;
@@ -175,6 +177,8 @@ void PDM::CalcShape3D(cv::Mat &s,cv::Mat &plocal)
 //===========================================================================
 void PDM::CalcShape2D(cv::Mat &s,cv::Mat &plocal,cv::Mat &pglobl)
 {
+//        ScopeTimer st(__FUNCTION__);
+
   assert((s.type() == CV_64F) && (plocal.type() == CV_64F) && 
 	 (pglobl.type() == CV_64F));
   assert((plocal.rows == _E.cols) && (plocal.cols == 1));

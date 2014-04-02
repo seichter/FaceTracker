@@ -39,17 +39,18 @@
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef __CLM_h_
 #define __CLM_h_
+
 #include <FaceTracker/PDM.h>
 #include <FaceTracker/Patch.h>
 #include <vector>
 namespace FACETRACKER
 {
-  //===========================================================================
-  /** 
+//===========================================================================
+/**
       A Constrained Local Model
   */
-  class CLM{
-  public:
+class CLM{
+public:
     PDM                               _pdm;   /**< 3D Shape model           */
     cv::Mat                           _plocal;/**< local parameters         */
     cv::Mat                           _pglobl;/**< global parameters        */
@@ -61,8 +62,8 @@ namespace FACETRACKER
     CLM(){;}
     CLM(const char* fname){this->Load(fname);}
     CLM(PDM &s,cv::Mat &r, std::vector<cv::Mat> &c,
-	std::vector<cv::Mat> &v,std::vector<std::vector<MPatch> > &p){
-      this->Init(s,r,c,v,p);
+        std::vector<cv::Mat> &v,std::vector<std::vector<MPatch> > &p){
+        this->Init(s,r,c,v,p);
     }
     CLM& operator=(CLM const&rhs);
     inline int nViews(){return _patch.size();}
@@ -72,15 +73,15 @@ namespace FACETRACKER
     void Write(std::ofstream &s);
     void Read(std::ifstream &s,bool readType = true);
     void Init(PDM &s,cv::Mat &r, std::vector<cv::Mat> &c,
-	      std::vector<cv::Mat> &v,std::vector<std::vector<MPatch> > &p);
-    void Fit(cv::Mat im, std::vector<int> &wSize,
-	     int nIter = 10,double clamp = 3.0,double fTol = 0.0);
-  private:
-    cv::Mat cshape_,bshape_,oshape_,ms_,u_,g_,J_,H_; 
+              std::vector<cv::Mat> &v,std::vector<std::vector<MPatch> > &p);
+    void Fit(const cv::Mat &im, std::vector<int> &wSize,
+             int nIter = 10, double clamp = 3.0, double fTol = 0.0);
+private:
+    cv::Mat cshape_,bshape_,oshape_,ms_,u_,g_,J_,H_;
     std::vector<cv::Mat> prob_,pmem_,wmem_;
     void Optimize(int idx,int wSize,int nIter,
-		  double fTol,double clamp,bool rigid);
-  };
-  //===========================================================================
+                  double fTol,double clamp,bool rigid);
+};
+//===========================================================================
 }
 #endif

@@ -261,11 +261,11 @@ void MPatch::Response(cv::Mat &im,cv::Mat &resp)
     // sum2one(resp); 
   }
   
-  cv::normalize( resp, resp, 0, 1, cv::NORM_MINMAX, -1, cv::Mat() );
+//  cv::normalize( resp, resp, 0, 1, cv::NORM_MINMAX, -1, cv::Mat() );
   
   // cv::threshold( resp, resp, 0.5, 1, cv::THRESH_BINARY_INV );
   
-  std::cout << resp << std::endl << std::endl;
+//  std::cout << resp << std::endl << std::endl;
   
   // std::cout << cv::sum(resp)/_p.size() << std::endl << std::endl;
   

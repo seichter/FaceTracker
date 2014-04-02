@@ -26,6 +26,7 @@ set(libfacetracker_hdrs
 	${PROJECT_SOURCE_DIR}/include/FaceTracker/PDM.h
 	${PROJECT_SOURCE_DIR}/include/FaceTracker/Patch.h
 	${PROJECT_SOURCE_DIR}/include/FaceTracker/Tracker.h
+        ${PROJECT_SOURCE_DIR}/include/FaceTracker/Timer.h
 	)
 
 set(libfacetracker_misc

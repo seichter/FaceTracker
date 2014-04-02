@@ -40,6 +40,7 @@
 #include <FaceTracker/Tracker.h>
 #include <opencv/highgui.h>
 #include <iostream>
+#include <FaceTracker/Timer.h>
 //=============================================================================
 void Draw(cv::Mat &image,cv::Mat &shape,cv::Mat &con,cv::Mat &tri,cv::Mat &visi)
 {
@@ -165,8 +166,24 @@ int main(int argc, const char** argv)
   if(parse_cmd(argc,argv,ftFile,conFile,triFile,fcheck,scale,fpd)<0)return 0;
 
   //set other tracking parameters
-  std::vector<int> wSize1(1); wSize1[0] = 7;
-  std::vector<int> wSize2(3); wSize2[0] = 11; wSize2[1] = 9; wSize2[2] = 7;
+
+#if 0
+  std::vector<int> wSize1(1);
+  wSize1[0] = 7;
+
+  std::vector<int> wSize2(3);
+  wSize2[0] = 11;
+  wSize2[1] = 9;
+  wSize2[2] = 7;
+#else
+  std::vector<int> wSize1(1);
+  wSize1[0] = 5;
+
+  std::vector<int> wSize2(3);
+  wSize2[0] = 9;
+  wSize2[1] = 7;
+  wSize2[2] = 5;
+#endif
   int nIter = 5; double clamp=3,fTol=0.01; 
   FACETRACKER::Tracker model(ftFile);
   cv::Mat tri=FACETRACKER::IO::LoadTri(triFile);
@@ -193,6 +210,8 @@ int main(int argc, const char** argv)
     //track this image
     std::vector<int> wSize; if(failed)wSize = wSize2; else wSize = wSize1; 
     if(model.Track(gray,wSize,fpd,nIter,clamp,fTol,fcheck) == 0){
+//        ScopeTimer st("Draw");
+
       int idx = model._clm.GetViewIdx(); failed = false;
       Draw(im,model._shape,con,tri,model._clm._visi[idx]); 
     }else{
@@ -202,7 +221,7 @@ int main(int argc, const char** argv)
     //draw framerate on display image 
     if(fnum >= 9){      
       t1 = cvGetTickCount();
-      fps = 10.0/((double(t1-t0)/cvGetTickFrequency())/1e+6); 
+      fps = fnum/((double(t1-t0)/cvGetTickFrequency())/1e+6);
       t0 = t1; fnum = 0;
     }else fnum += 1;
     if(show){
@@ -212,7 +231,7 @@ int main(int argc, const char** argv)
     }
     //show image and check for user input
     imshow("Face Tracker",im); 
-    int c = cvWaitKey(10);
+    int c = cv::waitKey(1);
     if(c == 27)break; else if(char(c) == 'd')model.FrameReset();
   }return 0;
 }
